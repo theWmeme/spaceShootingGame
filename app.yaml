@@ -1,0 +1,17 @@
+kind: wasmer.io/App.v0
+name: spaceShootingGame
+owner: thewmeme
+package: .
+app_id: da_Ra7IetdUVop0
+scaling:
+  mode: single_concurrency
+annotations:
+  shipitcli.com/config:
+    commands: {}
+    php_version: 8.3.29
+    phpix: true
+    phpix_worker_threads: 4
+    port: 8080
+    use_composer: false
+  shipitcli.com/provider: php
+  shipitcli.com/version: 0.19.9
