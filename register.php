@@ -1,4 +1,5 @@
 <?php
+    session_start();
     include "connect.php";
 
     if($_SERVER["REQUEST_METHOD"]=="POST"){
@@ -8,7 +9,7 @@
 
 
         $checkEmail = "SELECT * FROM users WHERE email='$email'";
-        $result = $conn->query("$checkEmail");
+        $result = $conn->query($checkEmail);
 
         if($result->num_rows > 0){
             echo "<script>alert('Email already has an account'); 
@@ -19,8 +20,10 @@
             $sql = "INSERT INTO users(name,email,password) VALUES ('$name', '$email', '$hashed_password')"; 
             
             if($conn->query($sql)===TRUE){
-                echo "Account Created";
-                
+                $_SESSION['user_id'] = $conn->insert_id;
+                $_SESSION['username'] = $name;
+                header("Location: game.php");
+                exit;
             }   
             else{
                 echo "Error".$sql.$conn->error;
