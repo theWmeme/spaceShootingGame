@@ -1,0 +1,50 @@
+/* Shared styles (homepage, login, signup, addEnemies) */
+*{box-sizing:border-box;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
+html,body{min-height:100%;margin:0;background:#05060f;color:#fff}
+body{background:radial-gradient(circle at top, rgba(30,144,255,0.12), transparent 45%), #05060f;}
+
+button,input{font:inherit}
+input,button{outline:none}
+input{color:#fff}
+/* Utility helper to hide panels */
+.hidden{display:none!important}
+
+/* Homepage */
+.homepage{background-size:cover;background-position:center;height:100vh;display:flex;justify-content:center;align-items:center}
+.start-button{background-color:#28a745;color:white;padding:15px 32px;font-size:24px;border:none;border-radius:999px;cursor:pointer;box-shadow:0 16px 30px rgba(0,0,0,.25);transition:transform .2s ease,background .2s ease}
+.start-button:hover{transform:translateY(-2px);background:#1fa63a}
+.start-button:active{transform:translateY(0)}
+
+/* Login */
+.login-page{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:32px;background-image:url('images/login-background.png');background-size:cover;background-position:center;background-repeat:no-repeat;color:white;position:relative;}
+.login-page::before{content:'';position:absolute;inset:0;background:rgba(1,11,28,0.58);}
+.login-page .container{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:24px;justify-content:center;align-items:center;min-height:100vh;max-width:1080px;width:100%;}
+.login-page .form-box{width:min(440px,100%);background:rgba(3,18,38,0.82);border:1px solid rgba(255,255,255,0.12);border-radius:22px;backdrop-filter:blur(16px);box-shadow:0 30px 90px rgba(0,0,0,.35);overflow:hidden}
+.login-page .form-box form{display:grid;gap:18px;padding:32px}
+.login-page .form-box h2{margin:0;color:#f5faff;font-size:28px;letter-spacing:.02em;text-transform:uppercase}
+.login-page .form-box input{width:100%;padding:14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.07);color:white}
+.login-page .form-box input::placeholder{color:rgba(255,255,255,0.65)}
+.login-page .form-box button{width:100%;padding:14px 16px;border:none;border-radius:14px;background:#1e90ff;color:white;font-weight:700;cursor:pointer;transition:background .2s ease,transform .2s ease}
+.login-page .form-box button:hover{background:#1477d9;transform:translateY(-1px)}
+.login-page .form-box p{margin:0 0 24px;color:#c9d2e6;text-align:center;font-size:.95rem}
+.login-page .form-box a{color:#7ecbff;text-decoration:none;font-weight:600}
+.login-page .form-box a:hover{text-decoration:underline}
+
+.container{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:32px}
+.form-box{width:min(520px,100%);max-width:520px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);border-radius:24px;backdrop-filter:blur(18px);box-shadow:0 30px 80px rgba(0,0,0,.3);overflow:hidden}
+.form-box form{display:grid;gap:18px;padding:32px}
+.form-box h2{margin:0;color:#f5faff;font-size:28px;letter-spacing:.02em}
+.form-box input{width:100%;padding:14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,0.18);background:rgba(255,255,255,0.06);color:white}
+.form-box input::placeholder{color:rgba(255,255,255,0.65)}
+.form-box button{width:100%;padding:14px 16px;border:none;border-radius:14px;background:#1e90ff;color:white;font-weight:700;cursor:pointer;transition:background .2s ease,transform .2s ease}
+.form-box button:hover{background:#1477d9;transform:translateY(-1px)}
+.form-box p{margin:0 0 24px;color:#c9d2e6;text-align:center;font-size:.95rem}
+.form-box a{color:#7ecbff;text-decoration:none;font-weight:600}
+.form-box a:hover{text-decoration:underline}
+
+
+
+
+
+/* Utility */
+button:disabled{opacity:.6;cursor:not-allowed}
