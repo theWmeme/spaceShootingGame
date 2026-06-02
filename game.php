@@ -438,7 +438,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
           <a href="logout.php" class="logout-btn">Logout</a>
         </div>
       </div>
-      <p class="subhead">FOR THE KITTY FOOOOODDDD</p>
+      <p class="subhead">Game login is handled by the separate login flow. This page now focuses on the shoot‑em‑up experience and MySQL leaderboard.</p>
     </div>
 
     <div id="game-container">
