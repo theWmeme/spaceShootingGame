@@ -1,7 +1,7 @@
 <?php
-$servername = "mysql.railway.internal";
+$servername = "MySQL";
 $username = "root";
-$password = "TkHfatdjMelXctSkthIVQbatoOCRXlGs";
+$password = "JLYwVqacrARydohXcDOWAemsPWUdNvCX";
 $dbname = "railway";
 
 
