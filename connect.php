@@ -1,13 +1,13 @@
 <?php
-$servername = "MySQL";
-$username = "root";
-$password = "JLYwVqacrARydohXcDOWAemsPWUdNvCX";
-$dbname = "railway";
+$servername = getenv("MYSQLHOST");
+$username = getenv("MYSQLUSER");
+$password = getenv("MYSQLPASSWORD");
+$dbname = getenv("MYSQLDATABASE");
+$port = getenv("MYSQLPORT");
 
+$conn = new mysqli($servername, $username, $password, $dbname, $port);
 
-$conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
-    echo "connection failed";
+    die("Connection failed: " . $conn->connect_error);
 }
-
 ?>
