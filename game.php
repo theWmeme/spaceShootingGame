@@ -10,10 +10,10 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = intval($_SESSION['user_id']);
 $username = '';
 
-$userQuery = "SELECT name FROM users WHERE id = $user_id LIMIT 1";
-$userResult = $conn->query($userQuery);
-if ($userResult && $userResult->num_rows > 0) {
-    $userRow = $userResult->fetch_assoc();
+$userStmt = $conn->prepare("SELECT name FROM users WHERE id = ? LIMIT 1");
+$userStmt->execute([$user_id]);
+$userRow = $userStmt->fetch();
+if ($userRow) {
     $username = $userRow['name'];
 } else {
     header('Location: login.php');
@@ -21,14 +21,18 @@ if ($userResult && $userResult->num_rows > 0) {
 }
 
 $createLeaderboardTable = "CREATE TABLE IF NOT EXISTS highscores (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     username VARCHAR(100) NOT NULL,
     score INT NOT NULL DEFAULT 0,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    UNIQUE KEY user_score_unique (user_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
-$conn->query($createLeaderboardTable);
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (user_id)
+);";
+try {
+    $conn->exec($createLeaderboardTable);
+} catch (PDOException $e) {
+    // Table may already exist, that's ok
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     header('Content-Type: application/json');
@@ -36,22 +40,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $action = $_POST['action'];
 
     if ($action === 'fetch_scores') {
-        $search = isset($_POST['search']) ? $conn->real_escape_string(trim($_POST['search'])) : '';
+        $search = isset($_POST['search']) ? trim($_POST['search']) : '';
         $where = '';
         if ($search !== '') {
-            $where = "WHERE username LIKE '%" . $search . "%'";
+            $where = "WHERE username ILIKE ?";
         }
 
         $sql = "SELECT username, score FROM highscores $where ORDER BY score DESC, updated_at DESC LIMIT 10";
-        $result = $conn->query($sql);
+        $stmt = $conn->prepare($sql);
+        if ($search !== '') {
+            $stmt->execute(['%' . $search . '%']);
+        } else {
+            $stmt->execute();
+        }
         $scores = [];
-        if ($result) {
-            while ($row = $result->fetch_assoc()) {
-                $scores[] = [
-                    'name' => $row['username'],
-                    'score' => intval($row['score'])
-                ];
-            }
+        while ($row = $stmt->fetch()) {
+            $scores[] = [
+                'name' => $row['username'],
+                'score' => intval($row['score'])
+            ];
         }
 
         echo json_encode(['success' => true, 'scores' => $scores]);
@@ -60,21 +67,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     if ($action === 'submit_score') {
         $score = isset($_POST['score']) ? intval($_POST['score']) : 0;
-        $safeName = $conn->real_escape_string($username);
 
-        $sql = "INSERT INTO highscores (user_id, username, score) VALUES ($user_id, '$safeName', $score) 
-            ON DUPLICATE KEY UPDATE score = GREATEST(score, VALUES(score)), username = VALUES(username), updated_at = CURRENT_TIMESTAMP";
-        $conn->query($sql);
+        $sql = "INSERT INTO highscores (user_id, username, score, updated_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+                ON CONFLICT (user_id) DO UPDATE SET score = GREATEST(highscores.score, EXCLUDED.score), 
+                                                      username = EXCLUDED.username, 
+                                                      updated_at = CURRENT_TIMESTAMP";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$user_id, $username, $score]);
 
-        $result = $conn->query("SELECT username, score FROM highscores ORDER BY score DESC, updated_at DESC LIMIT 10");
+        $stmt = $conn->prepare("SELECT username, score FROM highscores ORDER BY score DESC, updated_at DESC LIMIT 10");
+        $stmt->execute();
         $scores = [];
-        if ($result) {
-            while ($row = $result->fetch_assoc()) {
-                $scores[] = [
-                    'name' => $row['username'],
-                    'score' => intval($row['score'])
-                ];
-            }
+        while ($row = $stmt->fetch()) {
+            $scores[] = [
+                'name' => $row['username'],
+                'score' => intval($row['score'])
+            ];
         }
 
         echo json_encode(['success' => true, 'scores' => $scores]);

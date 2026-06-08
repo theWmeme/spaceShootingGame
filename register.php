@@ -3,30 +3,31 @@
     include "connect.php";
 
     if($_SERVER["REQUEST_METHOD"]=="POST"){
-        $name = mysqli_real_escape_string($conn, $_POST['name']); 
-        $email = mysqli_real_escape_string($conn, $_POST['email']);
-        $password = mysqli_real_escape_string($conn, $_POST['password']);
+        $name = $_POST['name'] ?? ''; 
+        $email = $_POST['email'] ?? '';
+        $password = $_POST['password'] ?? '';
 
 
-        $checkEmail = "SELECT * FROM users WHERE email='$email'";
-        $result = $conn->query($checkEmail);
+        $checkStmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+        $checkStmt->execute([$email]);
+        $existing = $checkStmt->fetch();
 
-        if($result->num_rows > 0){
+        if($existing){
             echo "<script>alert('Email already has an account'); 
             window.location.href = 'login.php';
             </script>";
         }else{
             $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-            $sql = "INSERT INTO users(name,email,password) VALUES ('$name', '$email', '$hashed_password')"; 
+            $stmt = $conn->prepare("INSERT INTO users(name, email, password) VALUES (?, ?, ?)");
             
-            if($conn->query($sql)===TRUE){
-                $_SESSION['user_id'] = $conn->insert_id;
+            try {
+                $stmt->execute([$name, $email, $hashed_password]);
+                $_SESSION['user_id'] = $conn->lastInsertId();
                 $_SESSION['username'] = $name;
                 header("Location: game.php");
                 exit;
-            }   
-            else{
-                echo "Error".$sql.$conn->error;
+            } catch (PDOException $e) {
+                echo "Error: " . $e->getMessage();
             }    
         }
          
