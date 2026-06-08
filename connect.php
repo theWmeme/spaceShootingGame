@@ -1,8 +1,8 @@
 <?php
-$servername = "dpg-d8esfa4p3tds738ugv9g-a";
-$username = "space_shooting_game_database_user";
-$password = "wp4FWdE17I0TWScFDYXyD8E8L5xSuf90";
-$dbname = "space_shooting_game_database";
+$servername = "db.fr-pari1.bengt.wasmernet.com:10272";
+$username = "user_795eccd1";
+$password = "pw_190e1852";
+$dbname = "spaceShooting";
 
 
 $conn = new mysqli($servername, $username, $password, $dbname);
